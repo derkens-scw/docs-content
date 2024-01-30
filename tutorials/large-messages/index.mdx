@@ -20,7 +20,7 @@ dates:
 <Macro id="iam-requirements" />
  
 
-In this tutorial, we will build a simple architecture to store and automatically convert images to PDF. The focus is on transferring large messages using a messaging service, specifically the [Scaleway Messaging and Queuing](/serverless/messaging/quickstart/) NATS server. Our setup involves using the [Object Storage](/storage/object/quickstart) service for image storage and the [Serverless Functions](/serverless/functions/quickstart/) service for conversion.
+In this tutorial, we will build a Cloud architecture to store and automatically convert images to PDF. The focus is on transferring large messages using a messaging service, specifically the [Scaleway Messaging and Queuing](/serverless/messaging/quickstart/) NATS server. Our setup involves using the [Object Storage](/storage/object/quickstart) service for image storage and the [Serverless Functions](/serverless/functions/quickstart/) service for conversion.
 
 We show how to provision all the required Scaleway resources via Terraform, but you can also use the [console](https://console.scaleway.com/login), the [API](https://www.scaleway.com/en/developers/api/) or one of our other supported [developer tools](https://www.scaleway.com/en/developers/).
 You can retrieve the full source code in [this repository](https://github.com/rouche-q/serverless-examples/tree/main/projects/large-messages/README.md), so you can choose to either jump straight into the code, or else follow along with the step-by-step explanation below to create the architecture yourself.
@@ -38,7 +38,7 @@ You can retrieve the full source code in [this repository](https://github.com/ro
 
 <Lightbox src="scaleway-large-messages-architecture.webp" alt="" />
 
-This tutorial's architecture is very simple, consisting of two main components:
+This tutorial's architecture consists of two main components:
 
 - A producer implemented as a shell script responsible for uploading an image to the Object Storage bucket and sending a message to the NATS server.
 - A consumer implemented as a serverless Python function designed to receive the message, parse it, extract the image URL, download it from the bucket, convert it to a PDF, and then re-upload the resulting PDF.
@@ -149,7 +149,7 @@ Three essential services are required to ensure everything is working together:
 
 ## Create the producer
 
-As mentioned earlier, the producer will be implemented as a straightforward shell script.
+As mentioned earlier, the producer will be implemented as a shell script.
 
 1. Create a file named `upload_img.sh`. Inside it, define two variables using Terraform commands to retrieve the bucket name and the NATS URL.
     ```bash
@@ -274,7 +274,7 @@ We continue using the Scaleway ecosystem and deploy the consumer using a Serverl
       depends_on = [data.archive_file.function_zip]
     }
     ```
-    The code sets up the function and connects it to the namespace. It tells the system to use Python version 3.11 and specifies which part of the Python file should run (the handler). It also adds important information, like environment variables and secrets, that our function will need to work correctly.
+    The code sets up the function and connects it to the function namespace. It tells the system to use Python version 3.11 and specifies which part of the Python file should run (the handler). It also adds important information, like environment variables and secrets, that our function will need to work correctly.
     Essential environment variables and secrets to use in our function logic are also added.
 
 8. Create the function trigger to "wake up" the function when a NATS message come in.
