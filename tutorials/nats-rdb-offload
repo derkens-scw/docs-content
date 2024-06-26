@@ -35,7 +35,34 @@ This project exemplifies a decoupled architecture, where producer and consumer p
 - Generated NATS Credentials
 
 
-## Create the scraper
+## Create the publisher
+
+We start by creating the publisher application.
+1. Create a new file in your project directory named nats_publisher.py
+2. Paste the following Python code in the file
+    ```
+import asyncio
+from nats.aio.client import Client as NATS
+
+async def run_publisher():
+    # Connect to the NATS server
+    nc = NATS()
+
+    await nc.connect("nats://nats.mnq.fr-par.scaleway.com:4222", user_credentials="/Users/dorianerkens/NATS-project/admin-test-dorian.creds")
+
+    # Publish a message to the subject
+    await nc.publish("foo", b'Hello, World!')
+
+    # Flush to ensure messages are processed
+    await nc.flush()
+
+    # Close the connection
+    await nc.close()
+
+if __name__ == '__main__':
+    asyncio.run(run_publisher())
+    ```
+
 
 We start by creating the scraper program, or the "data producer".
 1. Create a directory called `scraper`.
