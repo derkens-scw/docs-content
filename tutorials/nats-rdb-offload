@@ -23,16 +23,16 @@ In this tutorial, we show how to set up a system that receives a message from a 
 
 <Lightbox src="scaleway-scraping-architecture.webp" alt="" />
 
-We show how to provision all the required Scaleway resources via Terraform, but you can also use the [console](https://console.scaleway.com/), the [API](https://www.scaleway.com/en/developers/api/) or one of our other supported [developer tools](https://www.scaleway.com/en/developers/). The code for the functions is written in Python.
+We show how to provision all the required Scaleway resources using code examples and Scaleway Console [console](https://console.scaleway.com/). The code for the functions is written in Python.
 
 This project exemplifies a decoupled architecture, where producer and consumer perform specific tasks independently. This kind of design is modular and allows for flexibility and scalability. It also adheres to the principles of microservices and serverless architectures, where individual functions or scripts focus on specific tasks.
-
-You can find all of the code on [GitHub](https://github.com/scaleway/serverless-scraping-tutorial), so feel free to dive right in, or else follow along with the step-by-step explanation below to create the architecture yourself.
 
 <Macro id="requirements" />
 
 - A Scaleway account logged into the [console](https://console.scaleway.com)
-- Set up [authentication for the Terraform provider](https://registry.terraform.io/providers/scaleway/scaleway/latest/docs#authentication)
+- 
+
+
 
 ## Create the scraper
 
