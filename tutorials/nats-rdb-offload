@@ -48,7 +48,7 @@ async def run_publisher():
     # Connect to the NATS server
     nc = NATS()
 
-    await nc.connect("nats://nats.mnq.fr-par.scaleway.com:4222", user_credentials="/Users/dorianerkens/NATS-project/admin-test-dorian.creds")
+    await nc.connect("NATS ACCOUNT URL", user_credentials="NATS CREDENTIALS PATH")
 
     # Publish a message to the subject
     await nc.publish("foo", b'Hello, World!')
