@@ -6,10 +6,11 @@ content:
   h1: Create a serverless scraping architecture, with Scaleway Messaging and Queuing SQS, Serverless Functions, and Managed Database.
   paragraph: Learn how to construct a scalable serverless scraping architecture with Scaleway Messaging, SQS, Serverless Functions, and Managed Database. Dive into this Terraform-based tutorial for step-by-step guidance on asynchronous data processing.
 categories:
-  - functions
+  - nats
   - messaging
   - postgresql-and-mysql
-tags: terraform scraping-architecture
+  - data
+tags: TBD
 dates:
   validation: 2024-03-15
   posted: 2023-12-08
