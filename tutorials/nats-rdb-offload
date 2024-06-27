@@ -35,6 +35,29 @@ This project exemplifies a decoupled architecture, where producer and consumer p
 - Generated NATS Credentials
 
 
+## Create a NATS server
+
+You can refer to the following documentation (https://www.scaleway.com/en/docs/serverless/messaging/api-cli/nats-cli/) to create your NATS stream.
+For the stream specifications, we recommend you to be as minimalist as possible. 
+There is no need for replication or specific parameters for this tutorial.
+
+Once you followed the abovementionned documentation, follow the next steps to set up your nats broker
+1. Open a Terminal window 
+2. Go to your directory for the project
+3. Run your NATS server by using the following code 
+    ```
+    nats-server
+
+    ```
+You now have your NATS server up and running.
+To be sure we did not forgot anything for the Scaleway context, paste the following code in your terminal
+    ```
+    nats context info scaleway  
+    ```
+You should see "OK" mentionned for the credentials path and that your NATS server is ready!
+If not go back to the NATS CLI documentation to create properly a Scaleway context.
+
+
 ## Create the publisher
 
 We start by creating the publisher application.
@@ -62,6 +85,9 @@ async def run_publisher():
 if __name__ == '__main__':
     asyncio.run(run_publisher())
     ```
+3. Update the code with your NATS information
+
+This small Python application will publish a "Hello World!" message under the "foo" subject
 
 
 We start by creating the scraper program, or the "data producer".
