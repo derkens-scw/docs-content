@@ -68,7 +68,10 @@ If not go back to the NATS CLI documentation to create properly a Scaleway conte
 1. Open a new Terminal window from your project directory
 2. Install the following dependencies for the tutorial
     ```
-    Lorem 
+    sudo apt-get install mysql-server
+    pip install mysql-connector-python 
+    pip install pynacl
+    pip install nkeys
     ```
 
 
