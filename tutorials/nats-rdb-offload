@@ -27,12 +27,16 @@ We show how to provision all the required Scaleway resources using code examples
 
 This project exemplifies a decoupled architecture, where producer and consumer perform specific tasks independently. This kind of design is modular and allows for flexibility and scalability. It also adheres to the principles of microservices and serverless architectures, where individual functions or scripts focus on specific tasks.
 
+To properly follow this tutorial, we recommend you to create a dedicated project in your Scaleway account.
+You can name it "RDB & NATS Tutorial". It will hold all your Scaleway ressources created for this tutorial, they will be easier to find.
+
 <Macro id="requirements" />
 
 - A Scaleway account logged into the [console](https://console.scaleway.com)
 - [Owner](/identity-and-access-management/iam/concepts/#owner) status or [IAM permissions](/identity-and-access-management/iam/concepts/#permission) allowing you to perform actions in the intended Organization
 - Installed [NATS CLI](https://github.com/nats-io/natscli) on your local machine
 - Generated NATS Credentials
+- Created RDB (https://www.scaleway.com/en/docs/managed-databases/postgresql-and-mysql/quickstart/)
 
 
 ## Create a NATS server
@@ -57,6 +61,20 @@ To be sure we did not forgot anything for the Scaleway context, paste the follow
 You should see "OK" mentionned for the credentials path and that your NATS server is ready!
 If not go back to the NATS CLI documentation to create properly a Scaleway context.
 
+<add screenshot of NATS information>
+
+## Connect to your Scalesway RDB
+
+1. Open a new Terminal window
+2. Go to Scaleway Console and into your project
+3. Go to your mySQL database 
+4. Go to Overview
+5. Use the snippet under Connection into the Network bloc so you can connect
+6. Copy the snippet into the Terminal window and update it with your created username
+7. Follow the instructions in the terminal to validate your password
+8. You should have an access to mysql environment 
+
+<add screenshot of sql terminal>
 
 ## Create the publisher
 
@@ -88,6 +106,55 @@ if __name__ == '__main__':
 3. Update the code with your NATS information
 
 This small Python application will publish a "Hello World!" message under the "foo" subject
+
+## Create the subscriber
+
+We start by creating the subscriber application.
+1. Create a new file in your project directory named nats_subscriber_with_mysql.py
+2. Paste the following Python code in the file
+    ```
+import asyncio
+import mysql.connector
+from nats.aio.client import Client as NATS
+
+async def run_subscriber():
+    # Connect to the NATS server
+    nc = NATS()
+
+    await nc.connect("NATS ACCOUNT URL", user_credentials="NATS CREDENTIALS PATH")
+
+    async def message_handler(msg):
+        subject = msg.subject
+        data = msg.data.decode()
+        print(f"Received a message on '{subject}': {data}")
+
+        # Store the message in the MySQL database
+        conn = mysql.connector.connect(
+            host="PUBLIC ENDPOINT",
+            port="PORT",
+            user="NAME",
+            password="PASSWORD",
+            database="nats_messages"
+        )
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO messages (subject, data) VALUES (%s, %s)', (subject, data))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    # Subscribe to a subject
+    await nc.subscribe("foo", cb=message_handler)
+
+    # Keep the subscriber running to receive messages
+    while True:
+        await asyncio.sleep(1)
+
+if __name__ == '__main__':
+    asyncio.run(run_subscriber())
+```
+3. Update the subscriber code with your Scaleway RDB information as well as the ones form your NATS.
+   You will note that they are the same as the publisher's. 
+   It's completely normal as both applications are communicating through the same NATS server.
 
 
 We start by creating the scraper program, or the "data producer".
