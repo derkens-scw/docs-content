@@ -168,42 +168,51 @@ if __name__ == '__main__':
    You will note that they are the same as the publisher's. 
    It's completely normal as both applications are communicating through the same NATS server.
 
-
-
-
 ## Put it all in motion
-Terraform makes this very straightforward. To provision all the resources and get everything up and running, run the following commands:
-```
-cd terraform
-terraform init
-terraform plan 
-terraform apply
-```
 
-### How to check that everything is working correctly
+You have now your architecture ready : 
+- A NATS server to handle the pub/sub messaging pattern
+- A publisher application that will send a message through the NATS server
+- A subscriber application that will retrieve the message from the NATS server and write it on the mySQL database
+- A database that can be read by the rest of your architecture's clients
 
-Go to the [Scaleway console](https://console.scaleway.com/), and check the logs and metrics for Serverless Functions' execution and Messaging and Queuing SQS queue statistics.
+To see the flow running, you can follow the steps:
+1. Open your terminal window dedicated to the subscriber and run the python file
+```
+python nats_subscriber_with_mysql.py
+```
+2. Open your terminal window dedicated to the publisher and run the python file
+```
+python nats_publisher.py
+```
+3. Go back to your terminal window of the subscriber. 
+   You can see that the message has been received by the application and sent to the database.
+4. Go back to your database terminal window (the one with >sql) and run the following code
+```
+USE nats_messages
+SELECT * FROM messages;
+```
+5. You should see your message in the table with the timestamp
 
-To make sure the data is correctly stored in the database, you can [connect to it directly](/managed-databases/postgresql-and-mysql/how-to/connect-database-instance/) via a CLI tool such as `psql`. 
-Retrieve the instance IP and port of your Managed Database from the console, under the [Managed Database section](https://console.scaleway.com/rdb/instances).
-Use the following command to connect to your database. When prompted for a password, you can find it by running `terraform output -json`.
-```
-psql -h <DB_INSTANCE_IP> --port <DB_INSTANCE_PORT> -d hn-database -U worker
-```
+<insert screenshot>
 
-When you are done testing, don't forget to clean up! To do so, run: 
+### How to remove all resources used in the tutorial
+
+To be sure that you are not running resources without using them, you can delete your database following this documentation (https://console.scaleway.com/rdb/instances/fr-par/2f03fca4-70b0-4ccd-aee5-01032d1cc3b2/overview)
+You can also delete your NATS server using the following commande in your terminal
 ```
-cd terraform
-terraform destroy
+nats-server --signal stop
 ```
+Messaging and Queuing NATS is a Serverless product and is only charge once you are movoing messages through the broker.
+So no worries for unexpected billing if you are not using it!
 
 ## Summary, going further, key takeaways
-We have shown how to asynchronously decouple the producer and the consumer using SQS, adhering to serverless patterns.
+We have shown how to asynchronously decouple a producer and a mySQL database using NATS, adhering to serverless patterns.
 
-While the volume of data processed in this example is quite small, thanks to the Messaging and Queuing SQS queue's robustness and the auto-scaling capabilities of the Serverless Functions, you can adapt this example to manage larger workloads.
+While the volume of data processed in this example is quite small, thanks to the Messaging and Queuing NATS streams's, your database will process message at an adapted pace.
+You can adapt this example to manage larger workloads.
 
 Here are some possible extensions to this basic example:
- - Replace the simple proposed logic with your own. What about counting how many times some keywords (e.g: copilot, serverless, microservice) appear in Hacker News articles? 
- - Define multiple cron triggers for different websites and pass the website as an argument to the function. Or, create multiple functions that feed the same queue.
- - Use a [Serverless Container](/serverless/containers/quickstart/) instead of the consumer function, and use a command line tool such as `htmldoc` or `pandoc` to convert the scraped articles to PDF and upload the result to a [Scaleway Object Storage](/storage/object/quickstart/) S3 bucket.
- - Replace the Managed Database for PostgreSQL with a [Scaleway Serverless Database](/serverless/sql-databases/quickstart/), so that all the infrastructure lives in the serverless ecosystem! *Note that at the moment there is no Terraform support for Serverless Database, hence the choice here to use Managed Database for PostgreSQL*.
+ - Use a continous flow of incoming messages
+ - Use a serverless Database to embrace further the Serverless architecture
+ - The scalability of NATS pub/sub patterns enables you to manage more than one customer and publisher, let's ty this!
