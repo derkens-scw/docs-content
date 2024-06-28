@@ -28,7 +28,7 @@ We show how to provision all the required Scaleway resources using code examples
 This project exemplifies a decoupled architecture, where producer and consumer perform specific tasks independently. This kind of design is modular and allows for flexibility and scalability. It also adheres to the principles of microservices and serverless architectures, where individual functions or scripts focus on specific tasks.
 
 To properly follow this tutorial, we recommend you to create a dedicated project in your Scaleway account.
-You can name it "RDB & NATS Tutorial". It will hold all your Scaleway ressources created for this tutorial, they will be easier to find.
+You can name it "RDB and NATS Tutorial". It will hold all your Scaleway ressources created for this tutorial, they will be easier to find.
 
 <Macro id="requirements" />
 
